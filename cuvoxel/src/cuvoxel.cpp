@@ -22,7 +22,7 @@ torch::Tensor voxel::select_voxels(
     const int32_t ndim = points.size(1);
     torch::Tensor voxels = torch::zeros({num_voxels, max_points, ndim},
         torch::TensorOptions().dtype(torch::kFloat).device(torch::kCUDA));
-    torch::Tensor visited = torch::zeros({num_voxels},
+    torch::Tensor visited = torch::zeros({num_voxels + 1},
         torch::TensorOptions().dtype(torch::kInt).device(torch::kCUDA));
     
     voxel::select_voxels_wrapper(points, point_to_voxel, visited, voxels);

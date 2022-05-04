@@ -130,4 +130,4 @@ if __name__ == "__main__":
         np.array([0.1, 0.1, 0.1]),
         coors_range=[-51.2, -51.2, -5.0, 51.2, 51.2, 3.0]
     )
-    np.save("voxels.npy", voxels)
+    np.save("voxels_gt.npy", voxels)

@@ -116,6 +116,8 @@ def points_to_voxel_new(
 
     points = torch.tensor(points).cuda().float().contiguous()
     unq_inv_origin = torch.tensor(unq_inv_origin).cuda().int().contiguous()
+    # indices = cuvoxel.sort_point_ids(unq_inv_origin)
+    # import ipdb; ipdb.set_trace()
     voxels = cuvoxel.select_voxels(points, unq_inv_origin, voxel_num, max_points)
     voxels = voxels.cpu().numpy()
     # select_voxels(points, voxels, unq_inv_origin, visited, max_points)
@@ -133,4 +135,4 @@ if __name__ == "__main__":
         np.array([0.1, 0.1, 0.1]),
         coors_range=[-51.2, -51.2, -5.0, 51.2, 51.2, 3.0]
     )
-    np.save("voxels_generated.npy", voxels)
+    np.save("voxels_gen.npy", voxels)

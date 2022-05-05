@@ -7,6 +7,7 @@ dist
 
 # file
 *.so
+*.npy
 *.ply
 *.obj
 .pypirc

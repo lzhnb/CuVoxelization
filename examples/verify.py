@@ -113,14 +113,17 @@ def points_to_voxel_new(
         shape=(voxel_num, max_points, points.shape[-1]), dtype=points.dtype
     )
     visited = np.zeros(shape=(voxel_num,), dtype=np.int32)
+    with cuvoxel.Timer("numba(cpu) operator: {:.6f}s"):
+        select_voxels(points, voxels, unq_inv_origin, visited, max_points)
 
     points = torch.tensor(points).cuda().float().contiguous()
     unq_inv_origin = torch.tensor(unq_inv_origin).cuda().int().contiguous()
-    # indices = cuvoxel.sort_point_ids(unq_inv_origin)
-    # import ipdb; ipdb.set_trace()
-    voxels = cuvoxel.select_voxels(points, unq_inv_origin, voxel_num, max_points)
-    voxels = voxels.cpu().numpy()
-    # select_voxels(points, voxels, unq_inv_origin, visited, max_points)
+    with cuvoxel.Timer("cuda operator: {:.6f}s"):
+        voxels_cuda = cuvoxel.select_voxels(points, unq_inv_origin, voxel_num, max_points)
+
+    voxels_cuda = voxels_cuda.cpu().numpy()
+    print(f"verify: {(voxels_cuda == voxels).all()}")
+
     voxels = voxels[:voxel_num]
     num_points_per_voxel_origin = np.clip(
         num_points_per_voxel_origin, 0, max_points)
@@ -135,4 +138,4 @@ if __name__ == "__main__":
         np.array([0.1, 0.1, 0.1]),
         coors_range=[-51.2, -51.2, -5.0, 51.2, 51.2, 3.0]
     )
-    np.save("voxels_gen.npy", voxels)
+    np.save("voxels.npy", voxels)
